@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import './App.css'
+import PostSale from './PostSale'
+import { supabase } from './supabaseClient'
 
 delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.mergeOptions({
@@ -11,40 +13,28 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 })
 
-const SAMPLE_SALES = [
-  {
-    id: 1,
-    title: "Moving Sale — Everything Must Go",
-    address: "1234 Oak Street, Eugene, OR",
-    date: "Sat–Sun, Jun 21–22",
-    items: ["furniture", "kitchen", "tools"],
-    lat: 44.0521,
-    lng: -123.0868
-  },
-  {
-    id: 2,
-    title: "Estate Sale — Antiques & Collectibles",
-    address: "567 Willow Ave, Springfield, OR",
-    date: "Sat, Jun 21",
-    items: ["antiques", "jewelry", "books"],
-    lat: 44.0462,
-    lng: -123.0220
-  },
-  {
-    id: 3,
-    title: "Garage Sale — Kids & Baby Items",
-    address: "890 Maple Dr, Eugene, OR",
-    date: "Sun, Jun 22",
-    items: ["baby gear", "toys", "clothing"],
-    lat: 44.0650,
-    lng: -123.1200
-  }
-]
-
 function App() {
   const [searchTerm, setSearchTerm] = useState('')
   const [radius, setRadius] = useState(10)
   const [selectedSale, setSelectedSale] = useState(null)
+  const [sales, setSales] = useState([])
+  const [showPostSale, setShowPostSale] = useState(false)
+
+  useEffect(() => {
+    fetchSales()
+  }, [])
+
+  const fetchSales = async () => {
+    const { data, error } = await supabase
+      .from('sales')
+      .select('*, items(*)')
+
+    if (error) {
+      console.error('Error fetching sales:', error)
+    } else {
+      setSales(data)
+    }
+  }
 
   const handleSearch = (e) => {
     e.preventDefault()
@@ -53,6 +43,14 @@ function App() {
 
   return (
     <div className="app">
+      {showPostSale && (
+        <PostSale
+          onClose={() => {
+            setShowPostSale(false)
+            fetchSales()
+          }}
+        />
+      )}
 
       <header className="header">
         <div className="header-inner">
@@ -95,39 +93,44 @@ function App() {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            {SAMPLE_SALES.map(sale => (
-              <Marker
-                key={sale.id}
-                position={[sale.lat, sale.lng]}
-                eventHandlers={{
-                  click: () => setSelectedSale(sale)
-                }}
-              >
-                <Popup>
-                  <strong>{sale.title}</strong><br />
-                  {sale.address}<br />
-                  {sale.date}
-                </Popup>
-              </Marker>
-            ))}
+            {sales
+              .filter(sale => sale.lat && sale.lng)
+              .map(sale => (
+                <Marker
+                  key={sale.id}
+                  position={[sale.lat, sale.lng]}
+                  eventHandlers={{
+                    click: () => setSelectedSale(sale)
+                  }}
+                >
+                  <Popup>
+                    <strong>{sale.title}</strong><br />
+                    {sale.address}<br />
+                    {sale.date_start} – {sale.date_end}
+                  </Popup>
+                </Marker>
+              ))}
           </MapContainer>
         </div>
 
         <div className="listings-panel">
           <h2>Sales near you</h2>
-          <p className="results-count">{SAMPLE_SALES.length} sales found</p>
-          {SAMPLE_SALES.map(sale => (
+          <p className="results-count">{sales.length} sales found</p>
+          {sales.length === 0 && (
+            <p className="empty-state">No sales posted yet. Be the first!</p>
+          )}
+          {sales.map(sale => (
             <div
               key={sale.id}
               className={`sale-card ${selectedSale?.id === sale.id ? 'sale-card-active' : ''}`}
               onClick={() => setSelectedSale(sale)}
             >
               <h3>{sale.title}</h3>
-              <p className="sale-address">{sale.address}</p>
-              <p className="sale-date">{sale.date}</p>
+              <p className="sale-address">{sale.address}, {sale.city}, {sale.state}</p>
+              <p className="sale-date">{sale.date_start} – {sale.date_end}</p>
               <div className="sale-tags">
-                {sale.items.map(item => (
-                  <span key={item} className="tag">{item}</span>
+                {sale.items && sale.items.map(item => (
+                  <span key={item.id} className="tag">{item.name}</span>
                 ))}
               </div>
             </div>
@@ -138,7 +141,7 @@ function App() {
       <div className="post-cta">
         <h2>Hosting a sale?</h2>
         <p>List it free on SaleFynder and reach hundreds of local shoppers.</p>
-        <button className="post-button">Post Your Sale</button>
+        <button className="post-button" onClick={() => setShowPostSale(true)}>Post Your Sale</button>
       </div>
 
     </div>
