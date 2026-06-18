@@ -1,0 +1,241 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f7f5f0;
+  color: #2c2c2a;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: #2c5f2e;
+  color: white;
+  padding: 20px 24px;
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.tagline {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+.search-bar {
+  background: white;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e0ddd6;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.search-bar form {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 10px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1.5px solid #d0cdc6;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: #2c5f2e;
+}
+
+.radius-select {
+  padding: 10px 12px;
+  border: 1.5px solid #d0cdc6;
+  border-radius: 8px;
+  font-size: 15px;
+  background: white;
+  cursor: pointer;
+}
+
+.search-button {
+  padding: 10px 24px;
+  background: #2c5f2e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.search-button:hover {
+  background: #1e4520;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  max-width: 1200px;
+  width: 100%;
+  margin: 24px auto;
+  gap: 24px;
+  padding: 0 24px;
+}
+
+.map-container {
+  flex: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 500px;
+  border: 1px solid #e0ddd6;
+}
+
+.listings-panel {
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.listings-panel h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.results-count {
+  font-size: 13px;
+  color: #888;
+  margin-top: -8px;
+}
+
+.sale-card {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  border: 1.5px solid #e0ddd6;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.sale-card:hover {
+  border-color: #2c5f2e;
+  box-shadow: 0 2px 8px rgba(44,95,46,0.1);
+}
+
+.sale-card-active {
+  border-color: #2c5f2e;
+  box-shadow: 0 2px 12px rgba(44,95,46,0.15);
+}
+
+.sale-card h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.sale-address {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 2px;
+}
+
+.sale-date {
+  font-size: 12px;
+  color: #2c5f2e;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.sale-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tag {
+  background: #f0ede6;
+  color: #555;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.marker {
+  background: #2c5f2e;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  transition: transform 0.2s;
+}
+
+.marker:hover {
+  transform: scale(1.15);
+}
+
+.marker-active {
+  background: #e85d24;
+  transform: scale(1.15);
+}
+
+.post-cta {
+  background: #2c5f2e;
+  color: white;
+  text-align: center;
+  padding: 48px 24px;
+  margin-top: auto;
+}
+
+.post-cta h2 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.post-cta p {
+  opacity: 0.85;
+  margin-bottom: 20px;
+}
+
+.post-button {
+  padding: 12px 32px;
+  background: white;
+  color: #2c5f2e;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.post-button:hover {
+  opacity: 0.9;
+}
