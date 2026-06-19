@@ -13,12 +13,25 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 })
 
+const haversineDistance = (lat1, lng1, lat2, lng2) => {
+  const R = 3958.8
+  const toRad = d => d * Math.PI / 180
+  const dLat = toRad(lat2 - lat1)
+  const dLng = toRad(lng2 - lng1)
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2
+  return R * 2 * Math.asin(Math.sqrt(a))
+}
+
 function App() {
   const [searchTerm, setSearchTerm] = useState('')
   const [radius, setRadius] = useState(10)
   const [selectedSale, setSelectedSale] = useState(null)
   const [sales, setSales] = useState([])
+  const [displayedSales, setDisplayedSales] = useState([])
   const [showPostSale, setShowPostSale] = useState(false)
+  const [userLocation, setUserLocation] = useState(null)
+  const [searchNote, setSearchNote] = useState(null)
+  const [searchActive, setSearchActive] = useState(false)
 
   useEffect(() => {
     fetchSales()
@@ -33,12 +46,90 @@ function App() {
       console.error('Error fetching sales:', error)
     } else {
       setSales(data)
+      setDisplayedSales(data)
+      setSearchActive(false)
+      setSearchNote(null)
     }
   }
 
-  const handleSearch = (e) => {
+  const getUserLocation = () => new Promise((resolve, reject) => {
+    if (!navigator.geolocation) return reject(new Error('unavailable'))
+    navigator.geolocation.getCurrentPosition(
+      pos => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => reject(new Error('denied'))
+    )
+  })
+
+  const handleSearch = async (e) => {
     e.preventDefault()
-    console.log('Searching for:', searchTerm, 'within', radius, 'miles')
+    const term = searchTerm.trim()
+    if (!term) return
+
+    const isZip = /^\d{5}$/.test(term)
+
+    if (isZip) {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(term)}&format=json&limit=1&countrycodes=us`,
+          { headers: { 'User-Agent': 'SaleFynder/1.0' } }
+        )
+        const results = await res.json()
+        if (!results.length) {
+          setSearchNote('Zip code not found. Please try again.')
+          return
+        }
+        // local variable only — zip searches never overwrite cached userLocation
+        const center = { lat: parseFloat(results[0].lat), lng: parseFloat(results[0].lon) }
+        const filtered = sales.filter(sale => {
+          if (!sale.lat || !sale.lng) return false
+          return haversineDistance(center.lat, center.lng, sale.lat, sale.lng) <= Number(radius)
+        })
+        setDisplayedSales(filtered)
+        setSearchNote(null)
+        setSearchActive(true)
+      } catch {
+        setSearchNote('Could not look up that zip code. Please try again.')
+      }
+    } else {
+      const termRegex = new RegExp('\\b' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i')
+      let center = userLocation
+      if (!center) {
+        try {
+          center = await getUserLocation()
+          setUserLocation(center)
+        } catch {
+          const filtered = sales.filter(sale =>
+            sale.items?.some(item =>
+              termRegex.test(item.name) ||
+              termRegex.test(item.category)
+            )
+          )
+          setDisplayedSales(filtered)
+          setSearchNote('Location access was needed for radius filtering. Showing all sales with matching items.')
+          setSearchActive(true)
+          return
+        }
+      }
+      const filtered = sales.filter(sale => {
+        const hasKeyword = sale.items?.some(item =>
+          termRegex.test(item.name) ||
+          termRegex.test(item.category)
+        )
+        if (!hasKeyword) return false
+        if (!sale.lat || !sale.lng) return false
+        return haversineDistance(center.lat, center.lng, sale.lat, sale.lng) <= Number(radius)
+      })
+      setDisplayedSales(filtered)
+      setSearchNote(null)
+      setSearchActive(true)
+    }
+  }
+
+  const clearSearch = () => {
+    setSearchTerm('')
+    setDisplayedSales(sales)
+    setSearchNote(null)
+    setSearchActive(false)
   }
 
   return (
@@ -79,7 +170,11 @@ function App() {
             <option value={50}>50 miles</option>
           </select>
           <button type="submit" className="search-button">Search</button>
+          {searchActive && (
+            <button type="button" className="clear-button" onClick={clearSearch}>Clear</button>
+          )}
         </form>
+        {searchNote && <p className="search-note">{searchNote}</p>}
       </div>
 
       <div className="main-content">
@@ -93,7 +188,7 @@ function App() {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            {sales
+            {displayedSales
               .filter(sale => sale.lat && sale.lng)
               .map(sale => (
                 <Marker
@@ -115,11 +210,13 @@ function App() {
 
         <div className="listings-panel">
           <h2>Sales near you</h2>
-          <p className="results-count">{sales.length} sales found</p>
-          {sales.length === 0 && (
-            <p className="empty-state">No sales posted yet. Be the first!</p>
+          <p className="results-count">{displayedSales.length} sales found</p>
+          {displayedSales.length === 0 && (
+            <p className="empty-state">
+              {searchActive ? 'No sales match your search.' : 'No sales posted yet. Be the first!'}
+            </p>
           )}
-          {sales.map(sale => (
+          {displayedSales.map(sale => (
             <div
               key={sale.id}
               className={`sale-card ${selectedSale?.id === sale.id ? 'sale-card-active' : ''}`}
@@ -143,7 +240,6 @@ function App() {
         <p>List it free on SaleFynder and reach hundreds of local shoppers.</p>
         <button className="post-button" onClick={() => setShowPostSale(true)}>Post Your Sale</button>
       </div>
-
     </div>
   )
 }

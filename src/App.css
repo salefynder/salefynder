@@ -92,6 +92,29 @@ body {
   background: #1e4520;
 }
 
+.clear-button {
+  padding: 10px 16px;
+  background: transparent;
+  color: #666;
+  border: 1.5px solid #d0cdc6;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.clear-button:hover {
+  border-color: #888;
+  color: #333;
+}
+
+.search-note {
+  max-width: 1200px;
+  margin: 8px auto 0;
+  font-size: 13px;
+  color: #888;
+}
+
 .main-content {
   flex: 1;
   display: flex;
