@@ -36,15 +36,28 @@ function PostSale({ onClose }) {
     setItems(items.filter((_, i) => i !== index))
   }
 
+  const geocodeAddress = async ({ address, city, state, zip }) => {
+    const query = encodeURIComponent(`${address}, ${city}, ${state} ${zip}`)
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=1`,
+      { headers: { 'User-Agent': 'SaleFynder/1.0' } }
+    )
+    const results = await res.json()
+    if (!results.length) throw new Error('Address not found. Please check your address and try again.')
+    return { lat: parseFloat(results[0].lat), lng: parseFloat(results[0].lon) }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
     try {
+      const { lat, lng } = await geocodeAddress(formData)
+
       const { data: sale, error: saleError } = await supabase
         .from('sales')
-        .insert([formData])
+        .insert([{ ...formData, lat, lng }])
         .select()
         .single()
 
