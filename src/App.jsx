@@ -33,10 +33,6 @@ function App() {
   const [searchNote, setSearchNote] = useState(null)
   const [searchActive, setSearchActive] = useState(false)
 
-  useEffect(() => {
-    fetchSales()
-  }, [])
-
   const fetchSales = async () => {
     const { data, error } = await supabase
       .from('sales')
@@ -51,6 +47,10 @@ function App() {
       setSearchNote(null)
     }
   }
+
+  useEffect(() => {
+    fetchSales()
+  }, [])
 
   const getUserLocation = () => new Promise((resolve, reject) => {
     if (!navigator.geolocation) return reject(new Error('unavailable'))
