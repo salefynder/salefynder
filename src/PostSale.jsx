@@ -157,7 +157,7 @@ function PostSale({ onClose, userLocation }) {
                 />
               </div>
 
-              <div className="form-row">
+              <div className="form-row form-row-dates">
                 <div className="form-group">
                   <label>Start Date</label>
                   <input

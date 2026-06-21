@@ -252,6 +252,25 @@
     min-height: 100%;
   }
 
+  .form-row {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .form-row > .form-group:first-child {
+    flex: 0 0 100%;
+  }
+
+  .form-row > .form-group-small {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .form-row-dates > .form-group {
+    flex: 1;
+    min-width: 0;
+  }
+
   .item-row {
     flex-wrap: wrap;
   }
