@@ -246,7 +246,8 @@ body {
   line-height: 1;
 }
 
-.mapboxgl-popup-content {
+.mapboxgl-popup-content strong {
+  display: block;
   padding-right: 36px;
 }
 
