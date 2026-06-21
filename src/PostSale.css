@@ -100,7 +100,18 @@
   .form-group-small {
     flex: 0 0 100px;
   }
-  
+
+  .state-zip-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .state-zip-row > .form-group {
+    flex: 0 0 100px;
+    margin-bottom: 0;
+  }
+
   .form-group label {
     display: block;
     font-size: 13px;
@@ -257,27 +268,29 @@
     gap: 0;
   }
 
-  .form-row > .form-group:first-child {
-    flex: 0 0 100%;
-  }
-
-  .form-row > .form-group-small {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .form-row > .form-group-small + .form-group-small {
-    margin-left: 8px;
-  }
-
   .form-row-dates > .form-group {
-    flex: 1;
-    min-width: 0;
+    flex: 0 0 50%;
   }
 
   .form-row-dates > .form-group:first-child {
+    padding-right: 8px;
+  }
+
+  .form-row-dates > .form-group + .form-group {
+    padding-left: 8px;
+  }
+
+  .state-zip-row {
+    gap: 0;
+  }
+
+  .state-zip-row > .form-group {
     flex: 1;
-    margin-right: 12px;
+    min-width: 0;
+  }
+
+  .state-zip-row > .form-group + .form-group {
+    margin-left: 8px;
   }
 
   .item-row {

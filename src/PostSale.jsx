@@ -196,18 +196,18 @@ function PostSale({ onClose, userLocation }) {
                 />
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label>City</label>
-                  <input
-                    type="text"
-                    name="city"
-                    placeholder={detectedCity || 'Eugene'}
-                    value={formData.city}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+              <div className="form-group">
+                <label>City</label>
+                <input
+                  type="text"
+                  name="city"
+                  placeholder={detectedCity || 'Eugene'}
+                  value={formData.city}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="state-zip-row">
                 <div className="form-group form-group-small">
                   <label>State</label>
                   <input
