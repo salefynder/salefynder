@@ -201,6 +201,7 @@ function App() {
             style={{ width: '100%', height: '100%' }}
             mapStyle="mapbox://styles/mapbox/streets-v12"
             mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+            onClick={() => setSelectedSale(null)}
             onLoad={(e) => e.target.resize()}
           >
             {displayedSales
@@ -210,7 +211,7 @@ function App() {
                   key={sale.id}
                   latitude={sale.lat}
                   longitude={sale.lng}
-                  onClick={() => setSelectedSale(sale)}
+                  onClick={(e) => { e.originalEvent.stopPropagation(); setSelectedSale(sale) }}
                 >
                   <div className={`map-pin${selectedSale?.id === sale.id ? ' map-pin-active' : ''}${routeSelection.has(sale.id) ? ' map-pin-route' : ''}`} />
                 </Marker>
@@ -220,7 +221,7 @@ function App() {
                 latitude={selectedSale.lat}
                 longitude={selectedSale.lng}
                 onClose={() => setSelectedSale(null)}
-                closeOnClick={true}
+                closeOnClick={false}
                 anchor="bottom"
               >
                 <strong>{selectedSale.title}</strong><br />
