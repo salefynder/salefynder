@@ -275,6 +275,10 @@
     flex: 1;
   }
 
+  .form-row-dates {
+    gap: 12px;
+  }
+
   .item-row {
     flex-wrap: wrap;
   }
