@@ -328,7 +328,7 @@ body {
   }
 
   .search-bar {
-    margin-top: calc(max(20px, env(safe-area-inset-top, 0px)) + 78px);
+    margin-top: calc(max(20px, env(safe-area-inset-top, 0px)) + 94px);
     padding: 12px 16px;
   }
 
