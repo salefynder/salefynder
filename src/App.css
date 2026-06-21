@@ -343,6 +343,24 @@ body {
   color: #111111;
 }
 
+.route-bar-plan {
+  background: #FFBA08;
+  border: 1.5px solid #FFBA08;
+  color: #111111;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.route-bar-plan:hover {
+  background: white;
+  border-color: white;
+  color: #111111;
+}
+
 .popup-route-btn {
   display: block;
   width: 100%;

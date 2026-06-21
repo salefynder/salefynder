@@ -32,6 +32,8 @@ function App() {
   const [searchActive, setSearchActive] = useState(false)
   const [mobileView, setMobileView] = useState('map')
   const [routeSelection, setRouteSelection] = useState(new Set())
+  const [routeMode, setRouteMode] = useState(false)
+  const [routeOrder, setRouteOrder] = useState([])
 
   const fetchSales = async () => {
     const { data, error } = await supabase
@@ -142,6 +144,19 @@ function App() {
   }
 
   const clearRouteSelection = () => setRouteSelection(new Set())
+
+  const enterRouteMode = () => {
+    const ordered = displayedSales
+      .filter(sale => routeSelection.has(sale.id))
+      .map(sale => sale.id)
+    setRouteOrder(ordered)
+    setRouteMode(true)
+  }
+
+  const exitRouteMode = () => {
+    setRouteMode(false)
+    setRouteOrder([])
+  }
 
   return (
     <div className="app">
@@ -277,8 +292,20 @@ function App() {
           </div>
           {routeSelection.size > 0 && (
             <div className="route-bar">
-              <span>{routeSelection.size} stop{routeSelection.size !== 1 ? 's' : ''} selected</span>
-              <button className="route-bar-clear" onClick={clearRouteSelection}>Clear</button>
+              {routeMode ? (
+                <>
+                  <span>Route: {routeOrder.length} stop{routeOrder.length !== 1 ? 's' : ''}</span>
+                  <button className="route-bar-clear" onClick={exitRouteMode}>Exit</button>
+                </>
+              ) : (
+                <>
+                  <span>{routeSelection.size} stop{routeSelection.size !== 1 ? 's' : ''} selected</span>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button className="route-bar-clear" onClick={clearRouteSelection}>Clear</button>
+                    <button className="route-bar-plan" onClick={enterRouteMode}>Plan Route</button>
+                  </div>
+                </>
+              )}
             </div>
           )}
         </div>
