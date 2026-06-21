@@ -220,7 +220,7 @@ function App() {
                 latitude={selectedSale.lat}
                 longitude={selectedSale.lng}
                 onClose={() => setSelectedSale(null)}
-                closeOnClick={false}
+                closeOnClick={true}
                 anchor="bottom"
               >
                 <strong>{selectedSale.title}</strong><br />
