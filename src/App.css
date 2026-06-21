@@ -246,6 +246,10 @@ body {
   line-height: 1;
 }
 
+.mapboxgl-popup-content {
+  padding-right: 36px;
+}
+
 /* ── Map pins ── */
 .map-pin {
   width: 22px;
