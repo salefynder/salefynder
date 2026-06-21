@@ -488,7 +488,7 @@ body {
   .fab {
     display: block;
     position: fixed;
-    bottom: max(80px, calc(60px + env(safe-area-inset-bottom, 0px)));
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
     right: 20px;
     z-index: 500;
     background: #FFBA08;
