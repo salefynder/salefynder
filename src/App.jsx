@@ -5,6 +5,12 @@ import './App.css'
 import PostSale from './PostSale'
 import { supabase } from './supabaseClient'
 
+const formatDate = (dateStr) => {
+  if (!dateStr) return ''
+  const [year, month, day] = dateStr.split('-')
+  return `${month}/${day}/${year}`
+}
+
 const haversineDistance = (lat1, lng1, lat2, lng2) => {
   const R = 3958.8
   const toRad = d => d * Math.PI / 180
@@ -226,7 +232,7 @@ function App() {
               >
                 <strong>{selectedSale.title}</strong><br />
                 {selectedSale.address}<br />
-                {selectedSale.date_start} – {selectedSale.date_end}
+                {formatDate(selectedSale.date_start)} – {formatDate(selectedSale.date_end)}
                 <button
                   className="popup-route-btn"
                   onClick={() => toggleRouteSelection(selectedSale.id)}
@@ -260,7 +266,7 @@ function App() {
                 />
                 <h3>{sale.title}</h3>
                 <p className="sale-address">{sale.address}, {sale.city}, {sale.state}</p>
-                <p className="sale-date">{sale.date_start} – {sale.date_end}</p>
+                <p className="sale-date">{formatDate(sale.date_start)} – {formatDate(sale.date_end)}</p>
                 <div className="sale-tags">
                   {sale.items && sale.items.map(item => (
                     <span key={item.id} className="tag">{item.name}</span>
