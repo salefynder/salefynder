@@ -254,7 +254,7 @@
 
   .form-row {
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 0;
   }
 
   .form-row > .form-group:first-child {
@@ -266,6 +266,10 @@
     min-width: 0;
   }
 
+  .form-row > .form-group-small + .form-group-small {
+    margin-left: 8px;
+  }
+
   .form-row-dates > .form-group {
     flex: 1;
     min-width: 0;
@@ -273,10 +277,7 @@
 
   .form-row-dates > .form-group:first-child {
     flex: 1;
-  }
-
-  .form-row-dates {
-    gap: 12px;
+    margin-right: 12px;
   }
 
   .item-row {
