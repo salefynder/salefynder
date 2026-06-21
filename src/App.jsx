@@ -25,6 +25,7 @@ function App() {
   const [searchNote, setSearchNote] = useState(null)
   const [searchActive, setSearchActive] = useState(false)
   const [mobileView, setMobileView] = useState('map')
+  const [routeSelection, setRouteSelection] = useState(new Set())
 
   const fetchSales = async () => {
     const { data, error } = await supabase
@@ -125,6 +126,17 @@ function App() {
     setSearchActive(false)
   }
 
+  const toggleRouteSelection = (id) => {
+    setRouteSelection(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const clearRouteSelection = () => setRouteSelection(new Set())
+
   return (
     <div className="app">
       {showPostSale && (
@@ -200,7 +212,7 @@ function App() {
                   longitude={sale.lng}
                   onClick={() => setSelectedSale(sale)}
                 >
-                  <div className={`map-pin${selectedSale?.id === sale.id ? ' map-pin-active' : ''}`} />
+                  <div className={`map-pin${selectedSale?.id === sale.id ? ' map-pin-active' : ''}${routeSelection.has(sale.id) ? ' map-pin-route' : ''}`} />
                 </Marker>
               ))}
             {selectedSale && (
@@ -214,35 +226,54 @@ function App() {
                 <strong>{selectedSale.title}</strong><br />
                 {selectedSale.address}<br />
                 {selectedSale.date_start} – {selectedSale.date_end}
+                <button
+                  className="popup-route-btn"
+                  onClick={() => toggleRouteSelection(selectedSale.id)}
+                >
+                  {routeSelection.has(selectedSale.id) ? '✓ Remove from Route' : '+ Add to Route'}
+                </button>
               </Popup>
             )}
           </Map>
         </div>
 
         <div className={`listings-panel${mobileView === 'map' ? ' mobile-hidden' : ''}`}>
-          <h2>Sales near you</h2>
-          <p className="results-count">{displayedSales.length} sales found</p>
-          {displayedSales.length === 0 && (
-            <p className="empty-state">
-              {searchActive ? 'No sales match your search.' : 'No sales posted yet. Be the first!'}
-            </p>
-          )}
-          {displayedSales.map(sale => (
-            <div
-              key={sale.id}
-              className={`sale-card ${selectedSale?.id === sale.id ? 'sale-card-active' : ''}`}
-              onClick={() => setSelectedSale(sale)}
-            >
-              <h3>{sale.title}</h3>
-              <p className="sale-address">{sale.address}, {sale.city}, {sale.state}</p>
-              <p className="sale-date">{sale.date_start} – {sale.date_end}</p>
-              <div className="sale-tags">
-                {sale.items && sale.items.map(item => (
-                  <span key={item.id} className="tag">{item.name}</span>
-                ))}
+          <div className="listings-scroll">
+            <h2>Sales near you</h2>
+            <p className="results-count">{displayedSales.length} sales found</p>
+            {displayedSales.length === 0 && (
+              <p className="empty-state">
+                {searchActive ? 'No sales match your search.' : 'No sales posted yet. Be the first!'}
+              </p>
+            )}
+            {displayedSales.map(sale => (
+              <div
+                key={sale.id}
+                className={`sale-card${selectedSale?.id === sale.id ? ' sale-card-active' : ''}${routeSelection.has(sale.id) ? ' sale-card-route' : ''}`}
+                onClick={() => setSelectedSale(sale)}
+              >
+                <button
+                  className={`route-checkbox${routeSelection.has(sale.id) ? ' route-checkbox-active' : ''}`}
+                  onClick={(e) => { e.stopPropagation(); toggleRouteSelection(sale.id) }}
+                  title={routeSelection.has(sale.id) ? 'Remove from route' : 'Add to route'}
+                />
+                <h3>{sale.title}</h3>
+                <p className="sale-address">{sale.address}, {sale.city}, {sale.state}</p>
+                <p className="sale-date">{sale.date_start} – {sale.date_end}</p>
+                <div className="sale-tags">
+                  {sale.items && sale.items.map(item => (
+                    <span key={item.id} className="tag">{item.name}</span>
+                  ))}
+                </div>
               </div>
+            ))}
+          </div>
+          {routeSelection.size > 0 && (
+            <div className="route-bar">
+              <span>{routeSelection.size} stop{routeSelection.size !== 1 ? 's' : ''} selected</span>
+              <button className="route-bar-clear" onClick={clearRouteSelection}>Clear</button>
             </div>
-          ))}
+          )}
         </div>
       </div>
 
