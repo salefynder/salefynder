@@ -127,6 +127,11 @@
   .form-group textarea:focus {
     border-color: #111111;
   }
+
+  .form-group input::placeholder,
+  .form-group textarea::placeholder {
+    color: #aaa;
+  }
   
   .form-row {
     display: flex;
@@ -235,3 +240,33 @@
     border-radius: 8px;
     margin-bottom: 24px;
   }
+
+@media (max-width: 768px) {
+  .post-sale-overlay {
+    padding: 0;
+  }
+
+  .post-sale-page {
+    border-radius: 0;
+    max-width: 100%;
+    min-height: 100%;
+  }
+
+  .item-row {
+    flex-wrap: wrap;
+  }
+
+  .item-row input:first-child {
+    flex: 0 0 100%;
+    min-width: 0;
+  }
+
+  .item-row select {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .item-row input[type="number"] {
+    flex: 0 0 90px;
+  }
+}

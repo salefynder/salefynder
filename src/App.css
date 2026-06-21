@@ -314,6 +314,15 @@ body {
 
 /* ── Mobile layout ── */
 @media (max-width: 768px) {
+  .app {
+    height: 100dvh;
+  }
+
+  .header {
+    padding-top: max(20px, env(safe-area-inset-top));
+    flex-shrink: 0;
+  }
+
   .mobile-tabs {
     display: flex;
     background: white;
@@ -350,7 +359,7 @@ body {
   .fab {
     display: block;
     position: fixed;
-    bottom: 24px;
+    bottom: max(80px, calc(60px + env(safe-area-inset-bottom, 0px)));
     right: 20px;
     z-index: 500;
     background: #FFBA08;
