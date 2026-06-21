@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from './supabaseClient'
 import './PostSale.css'
 
-function PostSale({ onClose }) {
+function PostSale({ onClose, userLocation }) {
   const [formData, setFormData] = useState({
     title: '',
     address: '',
@@ -17,6 +17,21 @@ function PostSale({ onClose }) {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(null)
+  const [detectedCity, setDetectedCity] = useState(null)
+
+  useEffect(() => {
+    if (!userLocation) return
+    fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${userLocation.lat}&lon=${userLocation.lng}&format=json`,
+      { headers: { 'User-Agent': 'SaleFynder/1.0' } }
+    )
+      .then(r => r.json())
+      .then(data => {
+        const city = data.address?.city || data.address?.town || data.address?.village
+        if (city) setDetectedCity(city)
+      })
+      .catch(() => {})
+  }, [])
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -187,7 +202,7 @@ function PostSale({ onClose }) {
                   <input
                     type="text"
                     name="city"
-                    placeholder="Eugene"
+                    placeholder={detectedCity || 'Eugene'}
                     value={formData.city}
                     onChange={handleChange}
                     required

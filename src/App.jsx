@@ -133,6 +133,7 @@ function App() {
             setShowPostSale(false)
             fetchSales()
           }}
+          userLocation={userLocation}
         />
       )}
 
