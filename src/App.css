@@ -6,18 +6,20 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #f7f5f0;
-  color: #2c2c2a;
+  background: #F5F4F2;
+  color: #111111;
 }
 
 .app {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
+/* ── Header ── */
 .header {
-  background: #2c5f2e;
+  background: #111111;
   color: white;
   padding: 20px 24px;
 }
@@ -25,24 +27,31 @@ body {
 .header-inner {
   max-width: 1200px;
   margin: 0 auto;
+  text-align: center;
 }
 
 .logo {
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: -0.5px;
+  color: white;
+}
+
+.logo-highlight {
+  color: #FFBA08;
 }
 
 .tagline {
   font-size: 14px;
-  opacity: 0.8;
+  color: #999999;
   margin-top: 4px;
 }
 
+/* ── Search bar ── */
 .search-bar {
   background: white;
   padding: 16px 24px;
-  border-bottom: 1px solid #e0ddd6;
+  border-bottom: 1px solid #D0D0D0;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
@@ -56,7 +65,7 @@ body {
 .search-input {
   flex: 1;
   padding: 10px 16px;
-  border: 1.5px solid #d0cdc6;
+  border: 1.5px solid #D0D0D0;
   border-radius: 8px;
   font-size: 15px;
   outline: none;
@@ -64,12 +73,12 @@ body {
 }
 
 .search-input:focus {
-  border-color: #2c5f2e;
+  border-color: #111111;
 }
 
 .radius-select {
   padding: 10px 12px;
-  border: 1.5px solid #d0cdc6;
+  border: 1.5px solid #D0D0D0;
   border-radius: 8px;
   font-size: 15px;
   background: white;
@@ -78,64 +87,69 @@ body {
 
 .search-button {
   padding: 10px 24px;
-  background: #2c5f2e;
-  color: white;
-  border: none;
+  background: #FFBA08;
+  color: #111111;
+  border: 2px solid #111111;
   border-radius: 8px;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 
 .search-button:hover {
-  background: #1e4520;
+  background: #111111;
+  color: #FFBA08;
 }
 
 .clear-button {
   padding: 10px 16px;
   background: transparent;
-  color: #666;
-  border: 1.5px solid #d0cdc6;
+  color: #111111;
+  border: 1.5px solid #111111;
   border-radius: 8px;
   font-size: 15px;
   cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 
 .clear-button:hover {
-  border-color: #888;
-  color: #333;
+  background: #111111;
+  color: white;
 }
 
 .search-note {
   max-width: 1200px;
   margin: 8px auto 0;
   font-size: 13px;
-  color: #888;
+  color: #666666;
 }
 
+/* ── Main layout ── */
 .main-content {
   flex: 1;
   display: flex;
   max-width: 1200px;
   width: 100%;
-  margin: 24px auto;
+  margin: 0 auto;
   gap: 24px;
-  padding: 0 24px;
+  padding: 16px 24px;
+  overflow: hidden;
 }
 
 .map-container {
   flex: 1;
   border-radius: 12px;
   overflow: hidden;
-  min-height: 500px;
-  height: 500px;
-  border: 1px solid #e0ddd6;
+  height: 100%;
+  border: 1.5px solid #111111;
 }
 
+/* ── Listings panel ── */
 .listings-panel {
   width: 340px;
+  height: 100%;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -143,12 +157,12 @@ body {
 
 .listings-panel h2 {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .results-count {
   font-size: 13px;
-  color: #888;
+  color: #666666;
   margin-top: -8px;
 }
 
@@ -156,37 +170,38 @@ body {
   background: white;
   border-radius: 10px;
   padding: 16px;
-  border: 1.5px solid #e0ddd6;
+  border: 1.5px solid #111111;
+  border-left: 1.5px solid #111111;
   cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-left 0.15s, box-shadow 0.15s;
 }
 
 .sale-card:hover {
-  border-color: #2c5f2e;
-  box-shadow: 0 2px 8px rgba(44,95,46,0.1);
+  border-left: 4px solid #FFBA08;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .sale-card-active {
-  border-color: #2c5f2e;
-  box-shadow: 0 2px 12px rgba(44,95,46,0.15);
+  border-left: 4px solid #FFBA08;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
 }
 
 .sale-card h3 {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 4px;
 }
 
 .sale-address {
   font-size: 12px;
-  color: #888;
+  color: #666666;
   margin-bottom: 2px;
 }
 
 .sale-date {
   font-size: 12px;
-  color: #2c5f2e;
-  font-weight: 500;
+  color: #111111;
+  font-weight: 600;
   margin-bottom: 8px;
 }
 
@@ -197,41 +212,44 @@ body {
 }
 
 .tag {
-  background: #f0ede6;
-  color: #555;
+  background: #FFBA08;
+  color: #111111;
   font-size: 11px;
+  font-weight: 600;
   padding: 2px 8px;
   border-radius: 20px;
+  border: 1px solid #111111;
 }
 
-.marker {
-  background: #2c5f2e;
-  color: white;
-  width: 32px;
-  height: 32px;
+.mapboxgl-marker svg {
+  display: none;
+}
+
+/* ── Map pins ── */
+.map-pin {
+  width: 22px;
+  height: 22px;
+  background: #FFBA08;
+  border: 2.5px solid #111111;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 14px;
   cursor: pointer;
-  border: 2px solid white;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  transition: transform 0.2s;
+  transition: transform 0.15s;
 }
 
-.marker:hover {
+.map-pin:hover {
+  transform: scale(1.2);
+}
+
+.map-pin-active {
+  background: #111111;
+  border-color: #FFBA08;
   transform: scale(1.15);
 }
 
-.marker-active {
-  background: #e85d24;
-  transform: scale(1.15);
-}
-
+/* ── Post CTA ── */
 .post-cta {
-  background: #2c5f2e;
+  background: #111111;
   color: white;
   text-align: center;
   padding: 48px 24px;
@@ -240,26 +258,109 @@ body {
 
 .post-cta h2 {
   font-size: 24px;
+  font-weight: 700;
   margin-bottom: 8px;
 }
 
 .post-cta p {
-  opacity: 0.85;
+  color: #999999;
   margin-bottom: 20px;
 }
 
 .post-button {
   padding: 12px 32px;
-  background: white;
-  color: #2c5f2e;
-  border: none;
+  background: #FFBA08;
+  color: #111111;
+  border: 2px solid #111111;
   border-radius: 8px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 
 .post-button:hover {
-  opacity: 0.9;
+  background: white;
+  color: #111111;
+}
+
+/* ── Mobile tab bar ── */
+.mobile-tabs {
+  display: none;
+}
+
+.mobile-tab {
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 15px;
+  font-weight: 600;
+  color: #666666;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.mobile-tab-active {
+  color: #111111;
+  border-bottom-color: #FFBA08;
+}
+
+/* ── Floating action button (mobile only) ── */
+.fab {
+  display: none;
+}
+
+/* ── Mobile layout ── */
+@media (max-width: 768px) {
+  .mobile-tabs {
+    display: flex;
+    background: white;
+    border-bottom: 1px solid #D0D0D0;
+    flex-shrink: 0;
+  }
+
+  .main-content {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+
+  .map-container,
+  .listings-panel {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .mobile-hidden {
+    display: none;
+  }
+
+  .post-cta {
+    display: none;
+  }
+
+  .fab {
+    display: block;
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    z-index: 500;
+    background: #FFBA08;
+    color: #111111;
+    border: 2px solid #111111;
+    border-radius: 24px;
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
 }

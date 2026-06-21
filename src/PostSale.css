@@ -1,7 +1,56 @@
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.post-sale-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  padding: 40px 24px;
+  overflow-y: auto;
+  animation: fadeIn 0.15s ease;
+}
+
 .post-sale-page {
-    min-height: 100vh;
-    background: #f7f5f0;
-  }
+  background: #F5F4F2;
+  width: 100%;
+  max-width: 720px;
+  border-radius: 12px;
+  overflow: hidden;
+  align-self: flex-start;
+  animation: slideUp 0.2s ease;
+}
+
+.post-sale-page .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+
+.close-btn:hover {
+  opacity: 1;
+}
   
   .form-container {
     max-width: 680px;
@@ -26,16 +75,16 @@
     border-radius: 12px;
     padding: 24px;
     margin-bottom: 20px;
-    border: 1px solid #e0ddd6;
+    border: 1.5px solid #111111;
   }
   
   .form-section h3 {
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 16px;
-    color: #2c5f2e;
+    color: #111111;
   }
-  
+
   .section-subtitle {
     font-size: 13px;
     color: #888;
@@ -76,7 +125,7 @@
   
   .form-group input:focus,
   .form-group textarea:focus {
-    border-color: #2c5f2e;
+    border-color: #111111;
   }
   
   .form-row {
@@ -140,26 +189,27 @@
   }
   
   .add-item-btn:hover {
-    border-color: #2c5f2e;
-    color: #2c5f2e;
+    border-color: #111111;
+    color: #111111;
   }
   
   .submit-btn {
     width: 100%;
     padding: 14px;
-    background: #2c5f2e;
-    color: white;
-    border: none;
+    background: #FFBA08;
+    color: #111111;
+    border: 2px solid #111111;
     border-radius: 10px;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     margin-top: 8px;
-    transition: background 0.2s;
+    transition: background 0.2s, color 0.2s;
   }
-  
+
   .submit-btn:hover {
-    background: #1e4520;
+    background: #111111;
+    color: #FFBA08;
   }
   
   .submit-btn:disabled {
@@ -168,9 +218,9 @@
   }
   
   .success-message {
-    background: #eaf3de;
-    border: 1px solid #2c5f2e;
-    color: #2c5f2e;
+    background: #FFF8DC;
+    border: 1px solid #111111;
+    color: #111111;
     padding: 16px;
     border-radius: 8px;
     margin-bottom: 24px;

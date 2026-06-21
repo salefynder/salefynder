@@ -93,7 +93,7 @@ function PostSale({ onClose }) {
       <div className="post-sale-page">
         <header className="header">
           <div className="header-inner">
-            <h1 className="logo">SaleFynder</h1>
+            <h1 className="logo">Sale<span className="logo-highlight">Fynder</span></h1>
             <p className="tagline">Post your sale for free</p>
           </div>
           <button className="close-btn" onClick={onClose}>✕</button>

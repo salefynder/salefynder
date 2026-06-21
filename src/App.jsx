@@ -24,6 +24,7 @@ function App() {
   const [userLocation, setUserLocation] = useState(null)
   const [searchNote, setSearchNote] = useState(null)
   const [searchActive, setSearchActive] = useState(false)
+  const [mobileView, setMobileView] = useState('map')
 
   const fetchSales = async () => {
     const { data, error } = await supabase
@@ -137,7 +138,7 @@ function App() {
 
       <header className="header">
         <div className="header-inner">
-          <h1 className="logo">SaleFynder</h1>
+          <h1 className="logo">Sale<span className="logo-highlight">Fynder</span></h1>
           <p className="tagline">Find every garage sale, yard sale & estate sale near you</p>
         </div>
       </header>
@@ -169,8 +170,19 @@ function App() {
         {searchNote && <p className="search-note">{searchNote}</p>}
       </div>
 
+      <div className="mobile-tabs">
+        <button
+          className={`mobile-tab${mobileView === 'map' ? ' mobile-tab-active' : ''}`}
+          onClick={() => setMobileView('map')}
+        >Map</button>
+        <button
+          className={`mobile-tab${mobileView === 'list' ? ' mobile-tab-active' : ''}`}
+          onClick={() => setMobileView('list')}
+        >List</button>
+      </div>
+
       <div className="main-content">
-        <div className="map-container">
+        <div className={`map-container${mobileView === 'list' ? ' mobile-hidden' : ''}`}>
           <Map
             initialViewState={{ longitude: -123.0868, latitude: 44.0521, zoom: 11 }}
             style={{ width: '100%', height: '100%' }}
@@ -186,7 +198,9 @@ function App() {
                   latitude={sale.lat}
                   longitude={sale.lng}
                   onClick={() => setSelectedSale(sale)}
-                />
+                >
+                  <div className={`map-pin${selectedSale?.id === sale.id ? ' map-pin-active' : ''}`} />
+                </Marker>
               ))}
             {selectedSale && (
               <Popup
@@ -204,7 +218,7 @@ function App() {
           </Map>
         </div>
 
-        <div className="listings-panel">
+        <div className={`listings-panel${mobileView === 'map' ? ' mobile-hidden' : ''}`}>
           <h2>Sales near you</h2>
           <p className="results-count">{displayedSales.length} sales found</p>
           {displayedSales.length === 0 && (
@@ -230,6 +244,8 @@ function App() {
           ))}
         </div>
       </div>
+
+      <button className="fab" onClick={() => setShowPostSale(true)}>+ Post</button>
 
       <div className="post-cta">
         <h2>Hosting a sale?</h2>
