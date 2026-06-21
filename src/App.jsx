@@ -1,17 +1,9 @@
 import { useState, useEffect } from 'react'
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import 'leaflet/dist/leaflet.css'
-import L from 'leaflet'
+import { Map, Marker, Popup } from 'react-map-gl/mapbox'
+import 'mapbox-gl/dist/mapbox-gl.css'
 import './App.css'
 import PostSale from './PostSale'
 import { supabase } from './supabaseClient'
-
-delete L.Icon.Default.prototype._getIconUrl
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-})
 
 const haversineDistance = (lat1, lng1, lat2, lng2) => {
   const R = 3958.8
@@ -179,33 +171,36 @@ function App() {
 
       <div className="main-content">
         <div className="map-container">
-          <MapContainer
-            center={[44.0521, -123.0868]}
-            zoom={11}
+          <Map
+            initialViewState={{ longitude: -123.0868, latitude: 44.0521, zoom: 11 }}
             style={{ width: '100%', height: '100%' }}
+            mapStyle="mapbox://styles/mapbox/streets-v12"
+            mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
           >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
             {displayedSales
               .filter(sale => sale.lat && sale.lng)
               .map(sale => (
                 <Marker
                   key={sale.id}
-                  position={[sale.lat, sale.lng]}
-                  eventHandlers={{
-                    click: () => setSelectedSale(sale)
-                  }}
-                >
-                  <Popup>
-                    <strong>{sale.title}</strong><br />
-                    {sale.address}<br />
-                    {sale.date_start} – {sale.date_end}
-                  </Popup>
-                </Marker>
+                  latitude={sale.lat}
+                  longitude={sale.lng}
+                  onClick={() => setSelectedSale(sale)}
+                />
               ))}
-          </MapContainer>
+            {selectedSale && (
+              <Popup
+                latitude={selectedSale.lat}
+                longitude={selectedSale.lng}
+                onClose={() => setSelectedSale(null)}
+                closeOnClick={false}
+                anchor="bottom"
+              >
+                <strong>{selectedSale.title}</strong><br />
+                {selectedSale.address}<br />
+                {selectedSale.date_start} – {selectedSale.date_end}
+              </Popup>
+            )}
+          </Map>
         </div>
 
         <div className="listings-panel">
