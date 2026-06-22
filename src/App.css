@@ -361,6 +361,10 @@ body {
   color: #111111;
 }
 
+.route-bar-mobile {
+  display: none;
+}
+
 .popup-route-btn {
   display: block;
   width: 100%;
@@ -514,6 +518,19 @@ body {
 
   .post-cta {
     display: none;
+  }
+
+  .listings-panel .route-bar {
+    display: none;
+  }
+
+  .route-bar-mobile {
+    display: flex;
+    position: fixed;
+    bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+    left: 0;
+    right: 0;
+    z-index: 300;
   }
 
   .fab {

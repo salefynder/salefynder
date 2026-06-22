@@ -311,6 +311,25 @@ function App() {
         </div>
       </div>
 
+      {routeSelection.size > 0 && (
+        <div className="route-bar route-bar-mobile">
+          {routeMode ? (
+            <>
+              <span>Route: {routeOrder.length} stop{routeOrder.length !== 1 ? 's' : ''}</span>
+              <button className="route-bar-clear" onClick={exitRouteMode}>Exit</button>
+            </>
+          ) : (
+            <>
+              <span>{routeSelection.size} stop{routeSelection.size !== 1 ? 's' : ''} selected</span>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button className="route-bar-clear" onClick={clearRouteSelection}>Clear</button>
+                <button className="route-bar-plan" onClick={enterRouteMode}>Plan Route</button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
       <button className="fab" onClick={() => setShowPostSale(true)}>+ Post</button>
 
       <div className="post-cta">
