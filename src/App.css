@@ -534,7 +534,7 @@ body {
     padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   }
 
-  .fab-route-active {
+  .fab.fab-route-active {
     bottom: calc(80px + env(safe-area-inset-bottom, 0px));
   }
 
