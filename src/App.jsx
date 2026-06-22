@@ -330,7 +330,7 @@ function App() {
         </div>
       )}
 
-      <button className="fab" onClick={() => setShowPostSale(true)}>+ Post</button>
+      <button className={`fab${routeSelection.size > 0 ? ' fab-route-active' : ''}`} onClick={() => setShowPostSale(true)}>+ Post</button>
 
       <div className="post-cta">
         <h2>Hosting a sale?</h2>

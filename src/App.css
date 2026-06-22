@@ -527,10 +527,15 @@ body {
   .route-bar-mobile {
     display: flex;
     position: fixed;
-    bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+    bottom: 0;
     left: 0;
     right: 0;
     z-index: 300;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .fab-route-active {
+    bottom: calc(52px + env(safe-area-inset-bottom, 0px));
   }
 
   .fab {
