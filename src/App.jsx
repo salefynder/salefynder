@@ -42,6 +42,18 @@ function App() {
 
   const mapRef = useRef()
 
+  const routeStops = useMemo(
+    () => routeOrder.map(id => sales.find(s => s.id === id)).filter(Boolean),
+    [routeOrder, sales]
+  )
+
+  const routeStopSetKey = useMemo(
+    () => [...routeOrder].sort().join(','),
+    [routeOrder]
+  )
+
+  const fittedStopSetKeyRef = useRef(null)
+
   const fetchSales = async () => {
     const { data, error } = await supabase
       .from('sales')
@@ -234,18 +246,6 @@ function App() {
       return next
     })
   }
-
-  const routeStops = useMemo(
-    () => routeOrder.map(id => sales.find(s => s.id === id)).filter(Boolean),
-    [routeOrder, sales]
-  )
-
-  const routeStopSetKey = useMemo(
-    () => [...routeOrder].sort().join(','),
-    [routeOrder]
-  )
-
-  const fittedStopSetKeyRef = useRef(null)
 
   return (
     <div className="app">
