@@ -49,13 +49,13 @@ export default function RoutePanel({ stops, onReorder, onRemoveStop, fetching, e
 
   return (
     <div className="route-panel-wrap">
-      <div className="route-summary">
-        {fetching && <span className="route-summary-loading">Fetching route…</span>}
-        {!fetching && error && <span className="route-summary-error">{error}</span>}
-        {!fetching && !error && totalMi !== null && (
-          <span className="route-summary-stats">{totalMi} mi · {totalTime}</span>
-        )}
-      </div>
+      {(fetching || error || totalMi !== null) && (
+        <div className={`route-summary${(!fetching && !error && totalMi !== null) ? ' route-summary-ready' : ''}`}>
+          {fetching && <span className="route-summary-loading">Fetching route…</span>}
+          {!fetching && error && <span className="route-summary-error">{error}</span>}
+          {!fetching && !error && totalMi !== null && `↔  ${totalMi} mi · ${totalTime}`}
+        </div>
+      )}
       <div className="route-panel-list">
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={stops.map(s => s.id)} strategy={verticalListSortingStrategy}>

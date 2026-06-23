@@ -460,10 +460,19 @@ body {
 
 .route-summary {
   flex-shrink: 0;
-  padding: 0 0 10px 0;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  padding: 10px 14px;
   font-size: 13px;
   font-weight: 600;
-  min-height: 20px;
+}
+
+.route-summary-ready {
+  background: #FFBA08;
+  border: 1.5px solid #111111;
+  font-size: 15px;
+  font-weight: 700;
+  color: #111111;
 }
 
 .route-summary-loading {
@@ -472,10 +481,6 @@ body {
 
 .route-summary-error {
   color: #cc4444;
-}
-
-.route-summary-stats {
-  color: #111111;
 }
 
 .route-panel-list {
