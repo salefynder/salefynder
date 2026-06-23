@@ -450,6 +450,99 @@ body {
   display: none;
 }
 
+/* ── Route panel ── */
+.route-panel-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.route-stop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border: 1.5px solid #111111;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.route-stop-handle {
+  cursor: grab;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #999999;
+  padding: 0 2px;
+  flex-shrink: 0;
+  touch-action: none;
+  line-height: 1;
+}
+
+.route-stop-handle:active {
+  cursor: grabbing;
+}
+
+.route-stop-num {
+  width: 22px;
+  height: 22px;
+  background: #FFBA08;
+  border: 1.5px solid #111111;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.route-stop-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.route-stop-info strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.route-stop-info span {
+  display: block;
+  font-size: 11px;
+  color: #666666;
+  margin-top: 2px;
+}
+
+.route-stop-remove {
+  background: none;
+  border: 1.5px solid #D0D0D0;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 11px;
+  color: #666666;
+  flex-shrink: 0;
+  transition: border-color 0.15s, color 0.15s;
+  padding: 0;
+}
+
+.route-stop-remove:hover {
+  border-color: #111111;
+  color: #111111;
+}
+
 /* ── Mobile layout ── */
 @media (max-width: 768px) {
   .app {
