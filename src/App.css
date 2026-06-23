@@ -451,6 +451,33 @@ body {
 }
 
 /* ── Route panel ── */
+.route-panel-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.route-summary {
+  flex-shrink: 0;
+  padding: 0 0 10px 0;
+  font-size: 13px;
+  font-weight: 600;
+  min-height: 20px;
+}
+
+.route-summary-loading {
+  color: #999999;
+}
+
+.route-summary-error {
+  color: #cc4444;
+}
+
+.route-summary-stats {
+  color: #111111;
+}
+
 .route-panel-list {
   flex: 1;
   min-height: 0;

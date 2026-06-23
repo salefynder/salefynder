@@ -28,8 +28,17 @@ function SortableItem({ stop, index, onRemove }) {
   )
 }
 
-export default function RoutePanel({ stops, onReorder, onRemoveStop }) {
+export default function RoutePanel({ stops, onReorder, onRemoveStop, fetching, error, legs }) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }))
+
+  const totalMeters = legs.reduce((sum, leg) => sum + leg.distance, 0)
+  const totalSecs = legs.reduce((sum, leg) => sum + leg.duration, 0)
+  const totalMi = legs.length ? (totalMeters / 1609.34).toFixed(1) : null
+  const totalTime = legs.length
+    ? totalSecs < 3600
+      ? `${Math.round(totalSecs / 60)} min`
+      : `${Math.floor(totalSecs / 3600)} hr ${Math.round((totalSecs % 3600) / 60)} min`
+    : null
 
   const handleDragEnd = ({ active, over }) => {
     if (!over || active.id === over.id) return
@@ -39,14 +48,23 @@ export default function RoutePanel({ stops, onReorder, onRemoveStop }) {
   }
 
   return (
-    <div className="route-panel-list">
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={stops.map(s => s.id)} strategy={verticalListSortingStrategy}>
-          {stops.map((stop, i) => (
-            <SortableItem key={stop.id} stop={stop} index={i} onRemove={onRemoveStop} />
-          ))}
-        </SortableContext>
-      </DndContext>
+    <div className="route-panel-wrap">
+      <div className="route-summary">
+        {fetching && <span className="route-summary-loading">Fetching route…</span>}
+        {!fetching && error && <span className="route-summary-error">{error}</span>}
+        {!fetching && !error && totalMi !== null && (
+          <span className="route-summary-stats">{totalMi} mi · {totalTime}</span>
+        )}
+      </div>
+      <div className="route-panel-list">
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={stops.map(s => s.id)} strategy={verticalListSortingStrategy}>
+            {stops.map((stop, i) => (
+              <SortableItem key={stop.id} stop={stop} index={i} onRemove={onRemoveStop} />
+            ))}
+          </SortableContext>
+        </DndContext>
+      </div>
     </div>
   )
 }

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Map, Marker, Popup } from 'react-map-gl/mapbox'
+import { useState, useEffect, useRef, useMemo } from 'react'
+import { Map, Marker, Popup, Source, Layer } from 'react-map-gl/mapbox'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import './App.css'
 import PostSale from './PostSale'
@@ -35,6 +35,12 @@ function App() {
   const [routeSelection, setRouteSelection] = useState(new Set())
   const [routeMode, setRouteMode] = useState(false)
   const [routeOrder, setRouteOrder] = useState([])
+  const [routeGeometry, setRouteGeometry] = useState(null)
+  const [routeLegs, setRouteLegs] = useState([])
+  const [routeFetching, setRouteFetching] = useState(false)
+  const [routeError, setRouteError] = useState(null)
+
+  const mapRef = useRef()
 
   const fetchSales = async () => {
     const { data, error } = await supabase
@@ -54,6 +60,50 @@ function App() {
   useEffect(() => {
     fetchSales()
   }, [])
+
+  useEffect(() => {
+    if (!routeMode || routeStops.length < 2) {
+      setRouteGeometry(null)
+      setRouteLegs([])
+      return
+    }
+    const timer = setTimeout(async () => {
+      setRouteFetching(true)
+      setRouteError(null)
+      try {
+        const coords = routeStops.map(s => `${s.lng},${s.lat}`).join(';')
+        const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${coords}?geometries=geojson&overview=full&steps=false&access_token=${import.meta.env.VITE_MAPBOX_TOKEN}`
+        const res = await fetch(url)
+        const data = await res.json()
+        if (!data.routes?.length) throw new Error('no_route')
+        setRouteGeometry(data.routes[0].geometry)
+        setRouteLegs(data.routes[0].legs)
+      } catch (err) {
+        setRouteError(err.message === 'no_route'
+          ? 'No route found between these stops.'
+          : 'Could not fetch directions.')
+        setRouteGeometry(null)
+        setRouteLegs([])
+      } finally {
+        setRouteFetching(false)
+      }
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [routeStops, routeMode])
+
+  useEffect(() => {
+    if (!routeGeometry || !mapRef.current) return
+    if (routeStopSetKey === fittedStopSetKeyRef.current) return
+    if (window.matchMedia('(max-width: 768px)').matches && mobileView !== 'map') return
+    fittedStopSetKeyRef.current = routeStopSetKey
+    const coords = routeGeometry.coordinates
+    const lngs = coords.map(c => c[0])
+    const lats = coords.map(c => c[1])
+    mapRef.current.fitBounds(
+      [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]],
+      { padding: 80, duration: 800 }
+    )
+  }, [routeGeometry, routeStopSetKey, mobileView])
 
   const getUserLocation = () => new Promise((resolve, reject) => {
     if (!navigator.geolocation) return reject(new Error('unavailable'))
@@ -165,6 +215,11 @@ function App() {
   const exitRouteMode = () => {
     setRouteMode(false)
     setRouteOrder([])
+    setRouteGeometry(null)
+    setRouteLegs([])
+    setRouteFetching(false)
+    setRouteError(null)
+    fittedStopSetKeyRef.current = null
   }
 
   const removeStop = (id) => {
@@ -180,7 +235,17 @@ function App() {
     })
   }
 
-  const routeStops = routeOrder.map(id => sales.find(s => s.id === id)).filter(Boolean)
+  const routeStops = useMemo(
+    () => routeOrder.map(id => sales.find(s => s.id === id)).filter(Boolean),
+    [routeOrder, sales]
+  )
+
+  const routeStopSetKey = useMemo(
+    () => [...routeOrder].sort().join(','),
+    [routeOrder]
+  )
+
+  const fittedStopSetKeyRef = useRef(null)
 
   return (
     <div className="app">
@@ -242,6 +307,7 @@ function App() {
       <div className="main-content">
         <div className={`map-container${mobileView === 'list' ? ' mobile-hidden' : ''}`}>
           <Map
+            ref={mapRef}
             initialViewState={{ longitude: -123.0868, latitude: 44.0521, zoom: 11 }}
             style={{ width: '100%', height: '100%' }}
             mapStyle="mapbox://styles/mapbox/streets-v12"
@@ -249,6 +315,22 @@ function App() {
             onClick={() => setSelectedSale(null)}
             onLoad={(e) => e.target.resize()}
           >
+            {routeGeometry && (
+              <Source id="route" type="geojson" data={{ type: 'Feature', geometry: routeGeometry }}>
+                <Layer
+                  id="route-casing"
+                  type="line"
+                  layout={{ 'line-join': 'round', 'line-cap': 'round' }}
+                  paint={{ 'line-color': '#111111', 'line-width': 6 }}
+                />
+                <Layer
+                  id="route-line"
+                  type="line"
+                  layout={{ 'line-join': 'round', 'line-cap': 'round' }}
+                  paint={{ 'line-color': '#FFBA08', 'line-width': 4 }}
+                />
+              </Source>
+            )}
             {displayedSales
               .filter(sale => sale.lat && sale.lng)
               .map(sale => (
@@ -289,6 +371,9 @@ function App() {
               stops={routeStops}
               onReorder={setRouteOrder}
               onRemoveStop={removeStop}
+              fetching={routeFetching}
+              error={routeError}
+              legs={routeLegs}
             />
           ) : (
             <div className="listings-scroll">
