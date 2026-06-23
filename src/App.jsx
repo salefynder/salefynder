@@ -159,6 +159,7 @@ function App() {
       .map(sale => sale.id)
     setRouteOrder(ordered)
     setRouteMode(true)
+    setMobileView('list')
   }
 
   const exitRouteMode = () => {
