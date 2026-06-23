@@ -115,7 +115,7 @@ function App() {
       [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]],
       { padding: 80, duration: 800 }
     )
-  }, [routeGeometry, routeStopSetKey, mobileView])
+  }, [routeGeometry, mobileView])
 
   const getUserLocation = () => new Promise((resolve, reject) => {
     if (!navigator.geolocation) return reject(new Error('unavailable'))
