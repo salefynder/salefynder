@@ -360,6 +360,19 @@ function App() {
                 >
                   {routeSelection.has(selectedSale.id) ? '✓ Remove from Route' : '+ Add to Route'}
                 </button>
+                <button
+                  className="popup-directions-btn"
+                  onClick={() => {
+                    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+                    const url = isIOS
+                      ? `https://maps.apple.com/?daddr=${selectedSale.lat},${selectedSale.lng}`
+                      : `https://www.google.com/maps/dir/?api=1&destination=${selectedSale.lat},${selectedSale.lng}&travelmode=driving`
+                    window.open(url, '_blank')
+                  }}
+                >
+                  Get Directions
+                </button>
               </Popup>
             )}
           </Map>

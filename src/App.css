@@ -390,6 +390,26 @@ body {
   color: #FFBA08;
 }
 
+.popup-directions-btn {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 6px 10px;
+  background: white;
+  color: #111111;
+  border: 1.5px solid #111111;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.popup-directions-btn:hover {
+  background: #111111;
+  color: white;
+}
+
 /* ── Post CTA ── */
 .post-cta {
   background: #111111;
@@ -495,6 +515,27 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.route-gmaps-btn {
+  display: block;
+  width: 100%;
+  flex-shrink: 0;
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  background: #111111;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.route-gmaps-btn:hover {
+  background: #333333;
 }
 
 .route-leg-connector {

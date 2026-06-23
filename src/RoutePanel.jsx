@@ -60,6 +60,20 @@ export default function RoutePanel({ stops, onReorder, onRemoveStop, fetching, e
           {!fetching && !error && totalMi !== null && `↔  ${totalMi} mi · ${totalTime}`}
         </div>
       )}
+      {stops.length >= 2 && (
+        <button
+          className="route-gmaps-btn"
+          onClick={() => {
+            const dest = `${stops[stops.length - 1].lat},${stops[stops.length - 1].lng}`
+            const waypoints = stops.slice(0, -1).map(s => `${s.lat},${s.lng}`).join('|')
+            let url = `https://www.google.com/maps/dir/?api=1&destination=${dest}&travelmode=driving`
+            if (waypoints) url += `&waypoints=${waypoints}`
+            window.open(url, '_blank')
+          }}
+        >
+          Open in Google Maps
+        </button>
+      )}
       <div className="route-panel-list">
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={stops.map(s => s.id)} strategy={verticalListSortingStrategy}>
