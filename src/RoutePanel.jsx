@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy, arrayMove, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -7,6 +8,9 @@ const formatDate = (dateStr) => {
   const [year, month, day] = dateStr.split('-')
   return `${month}/${day}/${year}`
 }
+
+const formatLegDuration = (secs) =>
+  secs < 60 ? '< 1 min' : `${Math.round(secs / 60)} min`
 
 function SortableItem({ stop, index, onRemove }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: stop.id })
@@ -60,7 +64,12 @@ export default function RoutePanel({ stops, onReorder, onRemoveStop, fetching, e
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={stops.map(s => s.id)} strategy={verticalListSortingStrategy}>
             {stops.map((stop, i) => (
-              <SortableItem key={stop.id} stop={stop} index={i} onRemove={onRemoveStop} />
+              <Fragment key={stop.id}>
+                <SortableItem stop={stop} index={i} onRemove={onRemoveStop} />
+                {i < stops.length - 1 && legs[i] && (
+                  <div className="route-leg-connector">🚗 {formatLegDuration(legs[i].duration)}</div>
+                )}
+              </Fragment>
             ))}
           </SortableContext>
         </DndContext>

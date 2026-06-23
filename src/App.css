@@ -492,6 +492,15 @@ body {
   gap: 8px;
 }
 
+.route-leg-connector {
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666666;
+  padding: 2px 0;
+}
+
 .route-stop {
   display: flex;
   align-items: center;
