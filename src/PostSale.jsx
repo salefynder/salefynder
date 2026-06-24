@@ -103,6 +103,10 @@ function PostSale({ onClose, onSwitchToBulk, userLocation }) {
     }
   }
 
+  const todayFormatted = new Intl.DateTimeFormat(navigator.language, {
+    month: 'short', day: 'numeric', year: 'numeric'
+  }).format(new Date())
+
   return (
     <div className="post-sale-overlay">
       <div className="post-sale-page">
@@ -163,6 +167,7 @@ function PostSale({ onClose, onSwitchToBulk, userLocation }) {
                   <input
                     type="date"
                     name="date_start"
+                    placeholder={`e.g. ${todayFormatted}`}
                     value={formData.date_start}
                     onChange={handleChange}
                     required
@@ -173,6 +178,7 @@ function PostSale({ onClose, onSwitchToBulk, userLocation }) {
                   <input
                     type="date"
                     name="date_end"
+                    placeholder={`e.g. ${todayFormatted}`}
                     value={formData.date_end}
                     onChange={handleChange}
                     required
