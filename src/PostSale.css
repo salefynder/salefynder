@@ -360,6 +360,11 @@
     margin-left: 8px;
   }
 
+  .form-group input[type="date"] {
+    font-size: 13px;
+    min-width: 0;
+  }
+
   .state-zip-row {
     gap: 0;
   }
