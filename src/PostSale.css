@@ -348,21 +348,7 @@
   }
 
   .form-row-dates {
-    flex-wrap: nowrap;
-  }
-
-  .form-row-dates > .form-group {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .form-row-dates > .form-group + .form-group {
-    margin-left: 8px;
-  }
-
-  .form-group input[type="date"] {
-    font-size: 13px;
-    min-width: 0;
+    flex-direction: column;
   }
 
   .state-zip-row {
