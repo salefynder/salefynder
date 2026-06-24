@@ -344,7 +344,10 @@
 
   .form-section {
     padding: 16px;
-    background: red;
+  }
+
+  .form-group input[type="date"] {
+    border: 3px solid red;
   }
 
   .form-container {
