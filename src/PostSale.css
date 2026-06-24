@@ -347,6 +347,7 @@
   }
 
   .form-group input[type="date"] {
+    display: block;
     border: 3px solid red;
   }
 
