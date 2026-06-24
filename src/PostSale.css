@@ -348,6 +348,7 @@
 
   .form-row-dates > .form-group {
     width: 100%;
+    background: blue;
   }
 
   .form-group input[type="date"] {
