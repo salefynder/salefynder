@@ -346,8 +346,11 @@
     padding: 16px;
   }
 
+  .form-row-dates > .form-group {
+    width: 100%;
+  }
+
   .form-group input[type="date"] {
-    max-width: 100%;
     border: 3px solid red;
   }
 
