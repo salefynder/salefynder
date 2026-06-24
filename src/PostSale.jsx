@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from './supabaseClient'
 import './PostSale.css'
 
-function PostSale({ onClose, userLocation }) {
+function PostSale({ onClose, onSwitchToBulk, userLocation }) {
   const [formData, setFormData] = useState({
     title: '',
     address: '',
@@ -237,6 +237,16 @@ function PostSale({ onClose, userLocation }) {
             <div className="form-section">
               <h3>Items for Sale</h3>
               <p className="section-subtitle">List specific items so shoppers can find exactly what they're looking for.</p>
+              <p style={{ fontSize: '13px', color: '#888', marginBottom: '8px' }}>
+                Have a lot of items?{' '}
+                <button
+                  type="button"
+                  style={{ background: 'none', border: 'none', padding: 0, color: '#555', textDecoration: 'underline', cursor: 'pointer', fontSize: '13px' }}
+                  onClick={onSwitchToBulk}
+                >
+                  Upload a CSV file instead
+                </button>
+              </p>
 
               {items.map((item, index) => (
                 <div key={index} className="item-row">

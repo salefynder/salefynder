@@ -3,6 +3,7 @@ import { Map, Marker, Popup, Source, Layer } from 'react-map-gl/mapbox'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import './App.css'
 import PostSale from './PostSale'
+import BulkPostSale from './BulkPostSale'
 import RoutePanel from './RoutePanel'
 import { supabase } from './supabaseClient'
 
@@ -54,7 +55,7 @@ function App() {
   const [selectedSale, setSelectedSale] = useState(null)
   const [sales, setSales] = useState([])
   const [displayedSales, setDisplayedSales] = useState([])
-  const [showPostSale, setShowPostSale] = useState(false)
+  const [postSaleView, setPostSaleView] = useState(null)
   const [userLocation, setUserLocation] = useState(null)
   const [searchNote, setSearchNote] = useState(null)
   const [searchActive, setSearchActive] = useState(false)
@@ -294,12 +295,17 @@ function App() {
 
   return (
     <div className="app">
-      {showPostSale && (
+      {postSaleView === 'standard' && (
         <PostSale
-          onClose={() => {
-            setShowPostSale(false)
-            fetchSales()
-          }}
+          onClose={() => { setPostSaleView(null); fetchSales() }}
+          onSwitchToBulk={() => setPostSaleView('bulk')}
+          userLocation={userLocation}
+        />
+      )}
+      {postSaleView === 'bulk' && (
+        <BulkPostSale
+          onClose={() => { setPostSaleView(null); fetchSales() }}
+          onSwitchToStandard={() => setPostSaleView('standard')}
           userLocation={userLocation}
         />
       )}
@@ -516,12 +522,12 @@ function App() {
         </div>
       )}
 
-      <button className={`fab${routeSelection.size > 0 ? ' fab-route-active' : ''}`} onClick={() => setShowPostSale(true)}>+ Post</button>
+      <button className={`fab${routeSelection.size > 0 ? ' fab-route-active' : ''}`} onClick={() => setPostSaleView('standard')}>+ Post</button>
 
       <div className="post-cta">
         <h2>Hosting a sale?</h2>
         <p>List it free on SaleFynder and reach hundreds of local shoppers.</p>
-        <button className="post-button" onClick={() => setShowPostSale(true)}>Post Your Sale</button>
+        <button className="post-button" onClick={() => setPostSaleView('standard')}>Post Your Sale</button>
       </div>
     </div>
   )
