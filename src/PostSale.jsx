@@ -13,7 +13,7 @@ function PostSale({ onClose, userLocation }) {
     date_start: '',
     date_end: ''
   })
-  const [items, setItems] = useState([{ name: '', category: '', price: '' }])
+  const [items, setItems] = useState([{ name: '', category: '' }])
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(null)
@@ -44,7 +44,7 @@ function PostSale({ onClose, userLocation }) {
   }
 
   const addItem = () => {
-    setItems([...items, { name: '', category: '', price: '' }])
+    setItems([...items, { name: '', category: '' }])
   }
 
   const removeItem = (index) => {
@@ -94,7 +94,7 @@ function PostSale({ onClose, userLocation }) {
         title: '', address: '', city: '', state: '',
         zip: '', description: '', date_start: '', date_end: ''
       })
-      setItems([{ name: '', category: '', price: '' }])
+      setItems([{ name: '', category: '' }])
 
     } catch (err) {
       setError(err.message)
@@ -265,13 +265,6 @@ function PostSale({ onClose, userLocation }) {
                     <option value="sports">Sports</option>
                     <option value="other">Other</option>
                   </select>
-                  <input
-                    type="number"
-                    name="price"
-                    placeholder="Price $"
-                    value={item.price}
-                    onChange={(e) => handleItemChange(index, e)}
-                  />
                   {items.length > 1 && (
                     <button
                       type="button"
