@@ -354,6 +354,7 @@
     -webkit-appearance: none;
     appearance: none;
     padding: 10px 14px;
+    line-height: normal;
   }
 
   .form-container {
