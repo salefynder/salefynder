@@ -349,6 +349,7 @@
 
   .form-row-dates > .form-group {
     flex: 0 0 50%;
+    box-sizing: border-box;
   }
 
   .form-row-dates > .form-group:first-child {
