@@ -342,6 +342,10 @@
     min-height: 100%;
   }
 
+  .form-section {
+    padding: 16px;
+  }
+
   .form-row {
     flex-wrap: wrap;
     gap: 0;
