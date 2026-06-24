@@ -252,6 +252,28 @@
     margin-bottom: 24px;
   }
 
+.mobile-warning {
+  background: #FFF8E7;
+  border: 1px solid #FFBA08;
+  color: #7A5800;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.mobile-warning button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #7A5800;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+}
+
 .bulk-template-btn {
   display: block;
   width: 100%;

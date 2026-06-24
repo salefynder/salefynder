@@ -182,6 +182,7 @@ function BulkPostSale({ onClose, onSwitchToStandard, userLocation }) {
   const validCount = parsedItems.filter(i => !i._skipped).length
   const skippedCount = parsedItems.filter(i => i._skipped).length
   const fuzzyCount = parsedItems.filter(i => !i._skipped && i._categoryFuzzy).length
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
 
   return (
     <div className="post-sale-overlay">
@@ -201,6 +202,17 @@ function BulkPostSale({ onClose, onSwitchToStandard, userLocation }) {
               <p className="form-subtitle">Fill in the details below, then upload your item list as a CSV file.</p>
 
               {saleInfoError && <div className="error-message">{saleInfoError}</div>}
+
+              {isMobile && (
+                <div className="mobile-warning">
+                  This flow works best on a desktop computer — downloading and editing
+                  the CSV template may not work reliably on mobile. You can still
+                  continue if you have a CSV ready, or{' '}
+                  <button type="button" onClick={onSwitchToStandard}>
+                    switch to the standard form instead
+                  </button>.
+                </div>
+              )}
 
               <div className="form-section">
                 <h3>Sale Details</h3>
