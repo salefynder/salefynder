@@ -21,6 +21,33 @@ const haversineDistance = (lat1, lng1, lat2, lng2) => {
   return R * 2 * Math.asin(Math.sqrt(a))
 }
 
+const nearestNeighbor = (stops, origin) => {
+  const remaining = [...stops]
+  const result = []
+  let cur = origin
+  while (remaining.length) {
+    let best = 0
+    let bestDist = haversineDistance(cur.lat, cur.lng, remaining[0].lat, remaining[0].lng)
+    for (let i = 1; i < remaining.length; i++) {
+      const d = haversineDistance(cur.lat, cur.lng, remaining[i].lat, remaining[i].lng)
+      if (d < bestDist) { bestDist = d; best = i }
+    }
+    result.push(...remaining.splice(best, 1))
+    cur = result[result.length - 1]
+  }
+  return result.map(s => s.id)
+}
+
+const computeRouteSort = (mode, stops, loc) => {
+  if (mode === 'optimized') return nearestNeighbor(stops, loc)
+  const sorted = [...stops].sort((a, b) => {
+    const da = haversineDistance(loc.lat, loc.lng, a.lat, a.lng)
+    const db = haversineDistance(loc.lat, loc.lng, b.lat, b.lng)
+    return mode === 'near-to-far' ? da - db : db - da
+  })
+  return sorted.map(s => s.id)
+}
+
 function App() {
   const [searchTerm, setSearchTerm] = useState('')
   const [radius, setRadius] = useState(10)
@@ -39,6 +66,7 @@ function App() {
   const [routeLegs, setRouteLegs] = useState([])
   const [routeFetching, setRouteFetching] = useState(false)
   const [routeError, setRouteError] = useState(null)
+  const [routeSortNote, setRouteSortNote] = useState(null)
 
   const mapRef = useRef()
 
@@ -83,7 +111,8 @@ function App() {
       setRouteFetching(true)
       setRouteError(null)
       try {
-        const coords = routeStops.map(s => `${s.lng},${s.lat}`).join(';')
+        const origin = userLocation ? `${userLocation.lng},${userLocation.lat};` : ''
+        const coords = origin + routeStops.map(s => `${s.lng},${s.lat}`).join(';')
         const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${coords}?geometries=geojson&overview=full&steps=false&access_token=${import.meta.env.VITE_MAPBOX_TOKEN}`
         const res = await fetch(url)
         const data = await res.json()
@@ -101,7 +130,7 @@ function App() {
       }
     }, 300)
     return () => clearTimeout(timer)
-  }, [routeStops, routeMode])
+  }, [routeStops, routeMode, userLocation])
 
   useEffect(() => {
     if (!routeGeometry || !mapRef.current) return
@@ -231,7 +260,23 @@ function App() {
     setRouteLegs([])
     setRouteFetching(false)
     setRouteError(null)
+    setRouteSortNote(null)
     fittedStopSetKeyRef.current = null
+  }
+
+  const applyRouteSort = async (mode) => {
+    let loc = userLocation
+    if (!loc) {
+      try {
+        loc = await getUserLocation()
+        setUserLocation(loc)
+      } catch {
+        setRouteSortNote('Location access is needed to sort stops by distance. Please enable location and try again.')
+        return
+      }
+    }
+    setRouteSortNote(null)
+    setRouteOrder(computeRouteSort(mode, routeStops, loc))
   }
 
   const removeStop = (id) => {
@@ -341,8 +386,16 @@ function App() {
                   onClick={(e) => { e.originalEvent.stopPropagation(); setSelectedSale(sale) }}
                 >
                   <div className={`map-pin${selectedSale?.id === sale.id ? ' map-pin-active' : ''}${routeSelection.has(sale.id) ? ' map-pin-route' : ''}`} />
+                  {routeMode && routeGeometry && routeStops.length >= 1 && routeStops[routeStops.length - 1]?.id === sale.id && (
+                    <div className="map-pin-end-check" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'none' }} />
+                  )}
                 </Marker>
               ))}
+            {routeMode && userLocation && routeGeometry && (
+              <Marker latitude={userLocation.lat} longitude={userLocation.lng}>
+                <div className="map-pin-location" />
+              </Marker>
+            )}
             {selectedSale && (
               <Popup
                 latitude={selectedSale.lat}
@@ -387,6 +440,9 @@ function App() {
               fetching={routeFetching}
               error={routeError}
               legs={routeLegs}
+              onSort={applyRouteSort}
+              sortNote={routeSortNote}
+              hasOriginLeg={routeLegs.length > 0 && routeLegs.length === routeStops.length}
             />
           ) : (
             <div className="listings-scroll">

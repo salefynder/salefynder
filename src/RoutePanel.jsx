@@ -32,7 +32,7 @@ function SortableItem({ stop, index, onRemove }) {
   )
 }
 
-export default function RoutePanel({ stops, onReorder, onRemoveStop, fetching, error, legs }) {
+export default function RoutePanel({ stops, onReorder, onRemoveStop, fetching, error, legs, onSort, sortNote, hasOriginLeg }) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }))
 
   const totalMeters = legs.reduce((sum, leg) => sum + leg.distance, 0)
@@ -60,6 +60,12 @@ export default function RoutePanel({ stops, onReorder, onRemoveStop, fetching, e
           {!fetching && !error && totalMi !== null && `↔  ${totalMi} mi · ${totalTime}`}
         </div>
       )}
+      <div className="route-sort-row">
+        <button className="route-sort-btn" onClick={() => onSort('optimized')}>Optimized</button>
+        <button className="route-sort-btn" onClick={() => onSort('near-to-far')}>Near → Far</button>
+        <button className="route-sort-btn" onClick={() => onSort('far-to-near')}>Far → Near</button>
+      </div>
+      {sortNote && <p className="route-sort-note">{sortNote}</p>}
       {stops.length >= 2 && (
         <button
           className="route-gmaps-btn"
@@ -80,8 +86,8 @@ export default function RoutePanel({ stops, onReorder, onRemoveStop, fetching, e
             {stops.map((stop, i) => (
               <Fragment key={stop.id}>
                 <SortableItem stop={stop} index={i} onRemove={onRemoveStop} />
-                {i < stops.length - 1 && legs[i] && (
-                  <div className="route-leg-connector">🚗 {formatLegDuration(legs[i].duration)}</div>
+                {i < stops.length - 1 && legs[i + (hasOriginLeg ? 1 : 0)] && (
+                  <div className="route-leg-connector">🚗 {formatLegDuration(legs[i + (hasOriginLeg ? 1 : 0)].duration)}</div>
                 )}
               </Fragment>
             ))}
