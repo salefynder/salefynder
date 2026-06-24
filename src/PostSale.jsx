@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from './supabaseClient'
 import './PostSale.css'
 
@@ -18,12 +18,6 @@ function PostSale({ onClose, onSwitchToBulk, userLocation }) {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(null)
   const [detectedCity, setDetectedCity] = useState(null)
-  const [debugH, setDebugH] = useState(null)
-  const titleRef = useRef(null)
-
-  useEffect(() => {
-    if (titleRef.current) setDebugH(titleRef.current.offsetHeight)
-  }, [])
 
   useEffect(() => {
     if (!userLocation) return
@@ -143,7 +137,6 @@ function PostSale({ onClose, onSwitchToBulk, userLocation }) {
               <div className="form-group">
                 <label>Sale Title</label>
                 <input
-                  ref={titleRef}
                   type="text"
                   name="title"
                   placeholder="e.g. Moving Sale — Everything Must Go"
@@ -151,7 +144,6 @@ function PostSale({ onClose, onSwitchToBulk, userLocation }) {
                   onChange={handleChange}
                   required
                 />
-                {debugH && <p style={{color:'red',fontSize:11,margin:0}}>input height: {debugH}px</p>}
               </div>
 
               <div className="form-group">

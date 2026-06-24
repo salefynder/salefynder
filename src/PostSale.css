@@ -355,6 +355,7 @@
     appearance: none;
     padding: 10px 14px;
     line-height: normal;
+    min-height: 42px;
   }
 
   .form-container {
