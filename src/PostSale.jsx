@@ -11,7 +11,8 @@ function PostSale({ onClose, onSwitchToBulk, userLocation }) {
     zip: '',
     description: '',
     date_start: '',
-    date_end: ''
+    date_end: '',
+    website: ''
   })
   const [items, setItems] = useState([{ name: '', category: '' }])
   const [loading, setLoading] = useState(false)
@@ -62,17 +63,42 @@ function PostSale({ onClose, onSwitchToBulk, userLocation }) {
     return { lat: parseFloat(results[0].lat), lng: parseFloat(results[0].lon) }
   }
 
+  const checkRateLimit = () => {
+    try {
+      const key = 'sf_post_timestamps'
+      const now = Date.now()
+      const recent = JSON.parse(localStorage.getItem(key) || '[]')
+        .filter(t => now - t < 600_000)
+      if (recent.length >= 3) return false
+      return true
+    } catch {
+      return true
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    if (formData.website) {
+      setSuccess(true)
+      return
+    }
+
+    if (!checkRateLimit()) {
+      setError('You\'ve posted several times recently. Please wait a few minutes before posting again.')
+      return
+    }
+
     setLoading(true)
     setError(null)
 
     try {
-      const { lat, lng } = await geocodeAddress(formData)
+      const { website: _, ...saleData } = formData
+      const { lat, lng } = await geocodeAddress(saleData)
 
       const { data: sale, error: saleError } = await supabase
         .from('sales')
-        .insert([{ ...formData, lat, lng }])
+        .insert([{ ...saleData, lat, lng }])
         .select()
         .single()
 
@@ -89,10 +115,18 @@ function PostSale({ onClose, onSwitchToBulk, userLocation }) {
         if (itemsError) throw itemsError
       }
 
+      try {
+        const key = 'sf_post_timestamps'
+        const now = Date.now()
+        const recent = JSON.parse(localStorage.getItem(key) || '[]')
+          .filter(t => now - t < 600_000)
+        localStorage.setItem(key, JSON.stringify([...recent, now]))
+      } catch {}
+
       setSuccess(true)
       setFormData({
         title: '', address: '', city: '', state: '',
-        zip: '', description: '', date_start: '', date_end: ''
+        zip: '', description: '', date_start: '', date_end: '', website: ''
       })
       setItems([{ name: '', category: '' }])
 
@@ -296,6 +330,19 @@ function PostSale({ onClose, onSwitchToBulk, userLocation }) {
               <button type="button" className="add-item-btn" onClick={addItem}>
                 + Add Another Item
               </button>
+            </div>
+
+            <div style={{ position: 'absolute', left: '-9999px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }} aria-hidden="true">
+              <label htmlFor="website">Website</label>
+              <input
+                type="text"
+                id="website"
+                name="website"
+                value={formData.website}
+                onChange={handleChange}
+                tabIndex={-1}
+                autoComplete="off"
+              />
             </div>
 
             <button type="submit" className="submit-btn" disabled={loading}>
