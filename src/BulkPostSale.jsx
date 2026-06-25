@@ -73,7 +73,7 @@ const parseCSV = (text) => {
 function BulkPostSale({ onClose, onSwitchToStandard, userLocation }) {
   const [step, setStep] = useState('sale-info')
   const [formData, setFormData] = useState({
-    title: '', address: '', city: '', state: '', zip: '', description: '', date_start: '', date_end: ''
+    title: '', address: '', city: '', state: '', zip: '', description: '', date_start: '', date_end: '', website: ''
   })
   const [detectedCity, setDetectedCity] = useState(null)
   const [saleInfoError, setSaleInfoError] = useState(null)
@@ -155,14 +155,38 @@ function BulkPostSale({ onClose, onSwitchToStandard, userLocation }) {
     ))
   }
 
+  const checkRateLimit = () => {
+    try {
+      const key = 'sf_post_timestamps'
+      const now = Date.now()
+      const recent = JSON.parse(localStorage.getItem(key) || '[]')
+        .filter(t => now - t < 600_000)
+      if (recent.length >= 3) return false
+      return true
+    } catch {
+      return true
+    }
+  }
+
   const handleSubmit = async () => {
+    if (formData.website) {
+      setStep('success')
+      return
+    }
+
+    if (!checkRateLimit()) {
+      setSubmitError('You\'ve posted several times recently. Please wait a few minutes before posting again.')
+      return
+    }
+
     setSubmitting(true)
     setSubmitError(null)
     try {
-      const { lat, lng } = await geocodeAddress(formData)
+      const { website: _, ...saleData } = formData
+      const { lat, lng } = await geocodeAddress(saleData)
       const { data: sale, error: saleError } = await supabase
         .from('sales')
-        .insert([{ ...formData, lat, lng }])
+        .insert([{ ...saleData, lat, lng }])
         .select()
         .single()
       if (saleError) throw saleError
@@ -171,6 +195,13 @@ function BulkPostSale({ onClose, onSwitchToStandard, userLocation }) {
         .map(({ name, category }) => ({ name, category, sale_id: sale.id }))
       const { error: itemsError } = await supabase.from('items').insert(itemsToInsert)
       if (itemsError) throw itemsError
+      try {
+        const key = 'sf_post_timestamps'
+        const now = Date.now()
+        const recent = JSON.parse(localStorage.getItem(key) || '[]')
+          .filter(t => now - t < 600_000)
+        localStorage.setItem(key, JSON.stringify([...recent, now]))
+      } catch {}
       setStep('success')
     } catch (err) {
       setSubmitError(err.message)
@@ -256,6 +287,19 @@ function BulkPostSale({ onClose, onSwitchToStandard, userLocation }) {
                     <input type="text" name="zip" placeholder="97401" value={formData.zip} onChange={handleChange} />
                   </div>
                 </div>
+              </div>
+
+              <div style={{ position: 'absolute', left: '-9999px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }} aria-hidden="true">
+                <label htmlFor="website">Website</label>
+                <input
+                  type="text"
+                  id="website"
+                  name="website"
+                  value={formData.website}
+                  onChange={handleChange}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
               </div>
 
               <button className="submit-btn" onClick={handleSaleInfoContinue}>Continue to Item Upload</button>
