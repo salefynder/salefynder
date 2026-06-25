@@ -84,9 +84,14 @@ function App() {
   const fittedStopSetKeyRef = useRef(null)
 
   const fetchSales = async () => {
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
+    const cutoff = yesterday.toISOString().split('T')[0]
+
     const { data, error } = await supabase
       .from('sales')
       .select('*, items(*)')
+      .gte('date_end', cutoff)
 
     if (error) {
       console.error('Error fetching sales:', error)
