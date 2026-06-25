@@ -298,6 +298,8 @@ function App() {
     })
   }
 
+  const today = new Date().toISOString().split('T')[0]
+
   return (
     <div className="app">
       {postSaleView === 'standard' && (
@@ -418,6 +420,9 @@ function App() {
                 <strong>{selectedSale.title}</strong><br />
                 {selectedSale.address}<br />
                 {formatDate(selectedSale.date_start)} – {formatDate(selectedSale.date_end)}
+                {selectedSale.date_end < today && (
+                  <span className="ended-warning">This sale ended yesterday</span>
+                )}
                 <button
                   className="popup-route-btn"
                   onClick={() => toggleRouteSelection(selectedSale.id)}
@@ -478,6 +483,9 @@ function App() {
                   <h3>{sale.title}</h3>
                   <p className="sale-address">{sale.address}, {sale.city}, {sale.state}</p>
                   <p className="sale-date">{formatDate(sale.date_start)} – {formatDate(sale.date_end)}</p>
+                  {sale.date_end < today && (
+                    <p className="ended-warning">This sale ended yesterday</p>
+                  )}
                   <div className="sale-tags">
                     {sale.items && sale.items.map(item => (
                       <span key={item.id} className="tag">{item.name}</span>
